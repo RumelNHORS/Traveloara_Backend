@@ -40,9 +40,18 @@ INSTALLED_APPS = [
 
     
     'rest_framework',
+    'rest_framework.authtoken',
     'hotel',
     'userauths',
 ]
+
+# For Django Rest Framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    ),
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -78,18 +87,18 @@ WSGI_APPLICATION = 'hms.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 # Mysql
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'traveloara',
+        'NAME': 'travel',
         'USER': 'root',
         'PASSWORD': 'new_password',
         'HOST': 'localhost',
@@ -138,3 +147,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+AUTH_USER_MODEL = "userauths.User"
+
+# LOGIN_URL = "userauths:sign-in"
+# LOGOUT_REDIRECT_URL = "userauths:sign-in"
