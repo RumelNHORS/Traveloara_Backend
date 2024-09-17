@@ -13,4 +13,8 @@ urlpatterns = [
     path('rooms/', hotel_views.RoomListCreateView.as_view(), name='room_list_create'),
     # For retrieving, updating, or deleting a specific room
     path('rooms/<int:pk>/', hotel_views.RoomDetailView.as_view(), name='room_detail'),
+    # Creating the Room Amenities
+    path('amenities/', hotel_views.RoomAmenitiesListCreateView.as_view(), name='amenities_list_create'),
+    # Update, Delete Aminities
+    path('amenities/<int:pk>/', hotel_views.RoomAmenitiesDetailView.as_view(), name='amenities_detail'),
 ]

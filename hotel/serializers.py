@@ -16,3 +16,13 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = hotel_models.Room
         fields = '__all__'
+        
+
+class RoomAmenitiesSerializer(serializers.ModelSerializer):
+    # property = PropertySerializer()
+    # room = RoomSerializer()
+    class Meta:
+        model = hotel_models.RoomAmenities
+        # fields = ['id', 'property', 'room', 'amenity_name']
+        fields = '__all__'
+        
