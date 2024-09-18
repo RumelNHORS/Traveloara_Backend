@@ -53,5 +53,13 @@ class Room(models.Model):
     image5 = models.ImageField(upload_to='rooms/', blank=True, null=True)
 
     def __str__(self):
-        return f'{self.room_type} - Room {self.room_number}'
+        return f'{self.room_type} - Room No. {self.room_number}'
     
+
+class RoomAmenities(models.Model):
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='amenities')
+    amenity_name = models.CharField(max_length=255)
+
+    def __str__(self):
+        return f"{self.amenity_name} (Property: {self.property}, Room: {self.room})"

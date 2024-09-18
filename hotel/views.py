@@ -27,3 +27,13 @@ class RoomListCreateView(generics.ListCreateAPIView):
 class RoomDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
+
+# List/Create all Amenities by the Property and the Room
+class RoomAmenitiesListCreateView(generics.ListCreateAPIView):
+    queryset = hotel_models.RoomAmenities.objects.all()
+    serializer_class = hotel_serializers.RoomAmenitiesSerializer
+
+# Retrive, Update and Delete a Specific Amenities
+class RoomAmenitiesDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = hotel_models.RoomAmenities.objects.all()
+    serializer_class = hotel_serializers.RoomAmenitiesSerializer
