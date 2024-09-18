@@ -11,6 +11,14 @@ class PropertyListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Property.objects.all()
     serializer_class = hotel_serializers.PropertySerializer
 
+    # For Filter the Property by using the email. (GET /properties/?email=example@example.com)
+    def get_queryset(self):
+        queryset = hotel_models.Property.objects.all()
+        email = self.request.query_params.get('email', None)
+        if email:
+            queryset = queryset.filter(email__icontains=email)
+        return queryset
+
 # Retrieve, Update, and Delete a specific property
 class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.Property.objects.all()
