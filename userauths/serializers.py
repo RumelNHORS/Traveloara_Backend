@@ -38,7 +38,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-# Yser Loggin Serializer
+# User Loggin Serializer
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
@@ -48,3 +48,11 @@ class UserLoginSerializer(serializers.Serializer):
         if user is None:
             raise serializers.ValidationError("Invalid email or password.")
         return {'user': user}
+
+
+# All User List Serializer
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = use_models.User  
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']
+        # fields = '__all__'

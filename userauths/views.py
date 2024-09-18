@@ -20,3 +20,8 @@ class UserLoginView(APIView):
         user = serializer.validated_data['user']
         login(request, user)  # Use Django's login function
         return Response({"message": "Login successful."}, status=status.HTTP_200_OK)
+    
+# ALl User List View    
+class UserListView(generics.ListAPIView):
+    queryset = userauth_models.User.objects.all()
+    serializer_class = userauth_serializers.UserListSerializer
