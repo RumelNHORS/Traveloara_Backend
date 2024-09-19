@@ -45,6 +45,9 @@ class Room(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
+    # Adding room amenities
+    room_amenities = models.TextField(blank=True, null=True)
+
     # Adding room images
     image1 = models.ImageField(upload_to='rooms/', blank=True, null=True)
     image2 = models.ImageField(upload_to='rooms/', blank=True, null=True)

@@ -1,4 +1,5 @@
 from rest_framework import generics
+# from rest_framework.parsers import MultiPartParser, FormParser
 # from .models import Property
 from hotel import models as hotel_models
 # from .serializers import PropertySerializer
@@ -23,6 +24,12 @@ class PropertyListCreateView(generics.ListCreateAPIView):
 class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.Property.objects.all()
     serializer_class = hotel_serializers.PropertySerializer
+    # parser_classes = [MultiPartParser, FormParser]
+
+    # def put(self, request, *args, **kwargs):
+    #     print(request.data) 
+    #     print(request.FILES)
+    #     return super().put(request, *args, **kwargs)
 
 
 # List all room by the Property and create new room for property
