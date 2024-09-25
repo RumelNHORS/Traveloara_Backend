@@ -106,7 +106,7 @@ WSGI_APPLICATION = 'hms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'travel',
+        'NAME': 'test_travel',
         'USER': 'root',
         'PASSWORD': 'new_password',
         'HOST': 'localhost',

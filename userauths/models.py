@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db.models.signals import post_save
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.apps import AppConfig
 
 
 # Choices for gender and identity types
@@ -80,6 +82,15 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 
+    def get_profile(self):
+        try:
+            return self.profile
+        except ObjectDoesNotExist:
+            # Automatically create the profile if it does not exist
+            profile, created = Profile.objects.get_or_create(user=self)
+            return profile
+
+
 # Profile model linked to User via OneToOneField
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -100,10 +111,10 @@ class Profile(models.Model):
     class Meta:
         # Order profiles by descending dates
         ordering = ['-created_at']
-    
+       
     def __str__(self):
-        if self.full_name:
-            return f"{self.user.first_name}" 
+        if self.user.first_name:
+            return f"{self.user.first_name} {self.user.last_name}"
         else:
             return f"{self.user.username}"
 
@@ -121,3 +132,9 @@ post_save.connect(create_user_profile, sender=User)
 post_save.connect(save_user_profile, sender=User)
 
 
+
+class UserAuthConfig(AppConfig):
+    name = 'userauth'
+
+    def ready(self):
+        import userauth.signals
