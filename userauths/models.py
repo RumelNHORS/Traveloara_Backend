@@ -30,7 +30,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=20, choices=GENDER, default="Other")
 
     # User type fields
-    is_guest = models.BooleanField(default=False)
+    is_guest = models.BooleanField(default=True)
     is_host = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
