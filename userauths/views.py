@@ -19,6 +19,10 @@ class UserLoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)  # Use Django's login function
+        login_user_email = user.email
+        print('****************************************')
+        print('Login_User_Email:', login_user_email)
+        print('****************************************')
         return Response({"message": "Login successful."}, status=status.HTTP_200_OK)
     
 # ALl User List View    
