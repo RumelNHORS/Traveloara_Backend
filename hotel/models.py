@@ -25,6 +25,8 @@ class Property(models.Model):
     # city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     city = models.CharField(max_length=20)
     status = models.CharField(max_length=10, choices=PROPERTY_STATUS, default='Live')
+    # New field for comma-separated amenities
+    # amenities = models.CharField(max_length=255, blank=True, help_text="Comma separated amenities, e.g., Wi-Fi, Parking, Pool")
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -41,6 +43,10 @@ class Room(models.Model):
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
     number_of_beds = models.PositiveIntegerField()
     room_capacity = models.PositiveIntegerField()
+    number_of_bedrooms = models.PositiveIntegerField()
+    number_of_bathrooms = models.PositiveIntegerField()
+    description = models.TextField()
+    map_url = models.URLField(max_length=200, blank=True, null=True)
     is_available = models.BooleanField(default=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
