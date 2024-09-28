@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from userauths import serializers as userauth_serializers
 from userauths import models as userauth_models
 import logging
+from rest_framework.permissions import IsAuthenticated
 
 
 # User Register View
