@@ -46,7 +46,7 @@ INSTALLED_APPS = [
 ]
 
 # For Django Rest Framework
-REST_FRAMEWORK = {
+REST_FRAMEWORK = {"id": 1,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
     ),
@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'hms.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'travel',
+        'NAME': 'test',
         'USER': 'root',
         'PASSWORD': 'new_password',
         'HOST': 'localhost',

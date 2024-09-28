@@ -1,8 +1,10 @@
-from rest_framework import generics
+from rest_framework import generics, status, permissions
 # from .models import Property
 from hotel import models as hotel_models
 # from .serializers import PropertySerializer
 from hotel import serializers as hotel_serializers
+from userauths import permissions as user_permission
+from rest_framework.response import Response
 
 
 
@@ -18,6 +20,20 @@ class PropertyListCreateView(generics.ListCreateAPIView):
         if email:
             queryset = queryset.filter(email__icontains=email)
         return queryset
+
+    # Custom permission logic for creating properties (POST request)
+    # def post(self, request, *args, **kwargs):
+    #     if not request.user.is_authenticated:
+    #         return Response({"error": "You must be authenticated to add properties."}, status=status.HTTP_403_FORBIDDEN)
+        
+    #     # Checking if the user is a HostUser, Admin, or SuperUser
+    #     if not (user_permission.IsHostUser.has_permission(self, request, self) or 
+    #             user_permission.IsAdminUser.has_permission(self, request, self) or 
+    #             user_permission.IsSuperUser.has_permission(self, request, self)):
+    #         return Response({"error": "You do not have permission to create properties."}, status=status.HTTP_403_FORBIDDEN)
+        
+    #     # If the user has the necessary permissions, allow the creation
+    #     return super().post(request, *args, **kwargs)
 
 # Retrieve, Update, and Delete a specific property
 class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
