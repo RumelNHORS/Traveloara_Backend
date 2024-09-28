@@ -9,4 +9,7 @@ urlpatterns = [
     path('api/login/', userauth_views.UserLoginView.as_view(), name='login'),
     # Show All User/ User List
     path('api/users/', userauth_views.UserListView.as_view(), name='user_list'),
+    path('api/users/<int:pk>/', userauth_views.UserUpdateView.as_view(), name='user_update'),
+    # path('api/users/<int:pk>/', userauth_views.UserProfileUpdateView.as_view(), name='user_update'),
+    path('api/user_profile/<int:pk>/', userauth_views.UserProfileUpdateView.as_view(), name='user_update'),
 ]

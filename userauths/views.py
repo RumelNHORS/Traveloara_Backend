@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 from django.contrib.auth import login
 from userauths import serializers as userauth_serializers
 from userauths import models as userauth_models
+import logging
 
 
 # User Register View
@@ -29,3 +30,41 @@ class UserLoginView(APIView):
 class UserListView(generics.ListAPIView):
     queryset = userauth_models.User.objects.all()
     serializer_class = userauth_serializers.UserListSerializer
+
+
+logger = logging.getLogger(__name__)
+class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = userauth_models.User.objects.all()
+    serializer_class = userauth_serializers.UserListSerializer
+
+    def put(self, request, *args, **kwargs):
+        logger.debug(f'Request method: {request.method}')
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        logger.debug(f'Request method: {request.method}')
+        return self.update(request, *args, **kwargs)
+    
+
+class UserProfileUpdateView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = userauth_models.User.objects.all()
+    serializer_class = userauth_serializers.UserUpdateSerializer
+
+    def put(self, request, *args, **kwargs):
+        logger.debug(f"Request data: {request.data}")  # Logs the data for debugging
+        return self.update(request, *args, **kwargs)
+
+    def patch(self, request, *args, **kwargs):
+        logger.debug(f"Request data: {request.data}")  # Logs the data for debugging
+        return self.partial_update(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """Override to ensure both User and Profile are updated."""
+        partial = kwargs.pop('partial', False)
+        instance = self.get_object()  # Get the user object
+
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+
+        return Response(serializer.data)

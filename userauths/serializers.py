@@ -56,3 +56,46 @@ class UserListSerializer(serializers.ModelSerializer):
         model = use_models.User  
         fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']
         # fields = '__all__'
+
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = use_models.Profile
+        fields = ['profile_picture', 'date_of_birth', 'address', 'bio', 'identity_type', 'identity_image', 'verified']
+
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = use_models.User
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser', 'profile']
+
+    def update(self, instance, validated_data):
+        # Update User fields
+        profile_data = validated_data.pop('profile', None)
+        instance.first_name = validated_data.get('first_name', instance.first_name)
+        instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.email = validated_data.get('email', instance.email)
+        instance.phone = validated_data.get('phone', instance.phone)
+        instance.gender = validated_data.get('gender', instance.gender)
+        instance.is_guest = validated_data.get('is_guest', instance.is_guest)
+        instance.is_host = validated_data.get('is_host', instance.is_host)
+        instance.is_admin = validated_data.get('is_admin', instance.is_admin)
+        instance.is_superuser = validated_data.get('is_superuser', instance.is_superuser)
+        instance.save()
+
+        # Update Profile fields if profile data is present
+        if profile_data:
+            profile = instance.profile
+            profile.profile_picture = profile_data.get('profile_picture', profile.profile_picture)
+            profile.date_of_birth = profile_data.get('date_of_birth', profile.date_of_birth)
+            profile.address = profile_data.get('address', profile.address)
+            profile.bio = profile_data.get('bio', profile.bio)
+            profile.identity_type = profile_data.get('identity_type', profile.identity_type)
+            profile.identity_image = profile_data.get('identity_image', profile.identity_image)
+            profile.verified = profile_data.get('verified', profile.verified)
+            profile.save()
+
+        return instance
