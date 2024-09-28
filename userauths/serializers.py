@@ -87,10 +87,40 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
     profile = ProfileSerializer()
+    role = serializers.SerializerMethodField()
 
     class Meta:
         model = use_models.User
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser', 'profile']
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser', 'profile', 'role']
+
+    # Get the Use Role like..(Host, Guest, Admin, Superuser)
+    def get_role(self, obj):
+        roles = []
+        if obj.is_guest:
+            roles.append("Guest")
+        if obj.is_host:
+            roles.append("Host")
+        if obj.is_admin:
+            roles.append("Admin")
+        if obj.is_superuser:
+            roles.append("Superuser")
+        return ", ".join(roles) if roles else "No Role"
+
+    # Ensure that the identity image is provided only if an identity type is selected.
+    def validate(self, data):
+        profile_data = data.get('profile', {})
+        identity_type = profile_data.get('identity_type')
+        identity_image = profile_data.get('identity_image')
+
+        # If identity image is provided, check if identity type is also provided
+        if identity_image and not identity_type:
+            raise serializers.ValidationError("Please select an identity type before uploading the identity document.")
+
+        # If identity type is selected, ensure identity image is provided
+        if identity_type and not identity_image:
+            raise serializers.ValidationError("Identity image must be provided if identity type is selected.")
+
+        return data
 
     def update(self, instance, validated_data):
         # Update User fields
@@ -115,7 +145,13 @@ class UserUpdateSerializer(serializers.ModelSerializer):
             profile.bio = profile_data.get('bio', profile.bio)
             profile.identity_type = profile_data.get('identity_type', profile.identity_type)
             profile.identity_image = profile_data.get('identity_image', profile.identity_image)
-            profile.verified = profile_data.get('verified', profile.verified)
+            
+            # Verify the profile if identity image is provided
+            if 'identity_image' in profile_data and profile_data['identity_image'] is not None:
+                profile.verified = True
+            else:
+                profile.verified = False
+            
             profile.save()
 
         return instance
