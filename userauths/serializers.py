@@ -57,9 +57,3 @@ class UserListSerializer(serializers.ModelSerializer):
         fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']
         # fields = '__all__'
 
-
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = use_models.User
-        fields = ['first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']

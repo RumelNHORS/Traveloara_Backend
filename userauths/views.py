@@ -35,7 +35,7 @@ class UserListView(generics.ListAPIView):
 logger = logging.getLogger(__name__)
 class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = userauth_models.User.objects.all()
-    serializer_class = userauth_serializers.UserUpdateSerializer
+    serializer_class = userauth_serializers.UserListSerializer
 
     def put(self, request, *args, **kwargs):
         logger.debug(f'Request method: {request.method}')
