@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'hotel',
     'userauths',
+    'drf_yasg',
 ]
 
 # For Django Rest Framework
