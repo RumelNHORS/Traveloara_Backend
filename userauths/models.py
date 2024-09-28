@@ -57,28 +57,35 @@ class User(AbstractUser):
     def __str__(self):
         return self.username
 
+    # def save(self, *args, **kwargs):
+    #     # Set email as the default username
+    #     if not self.username:
+    #         self.username = self.email
+    #     # Ensure only one type of user is set
+    #     if self.is_guest:
+    #         self.is_host = False
+    #         self.is_admin = False
+    #         self.is_superuser = False
+    #     elif self.is_host:
+    #         self.is_guest = False
+    #         self.is_admin = False
+    #         self.is_superuser = False
+    #     elif self.is_admin:
+    #         self.is_guest = False
+    #         self.is_host = False
+    #         self.is_superuser = False
+    #     elif self.is_superuser:
+    #         self.is_guest = False
+    #         self.is_host = False
+    #         self.is_admin = False
+        
+    #     super().save(*args, **kwargs)
+
     def save(self, *args, **kwargs):
-        # Set email as the default username
+        # Set email as the default username if it's not already set
         if not self.username:
             self.username = self.email
-        # Ensure only one type of user is set
-        if self.is_guest:
-            self.is_host = False
-            self.is_admin = False
-            self.is_superuser = False
-        elif self.is_host:
-            self.is_guest = False
-            self.is_admin = False
-            self.is_superuser = False
-        elif self.is_admin:
-            self.is_guest = False
-            self.is_host = False
-            self.is_superuser = False
-        elif self.is_superuser:
-            self.is_guest = False
-            self.is_host = False
-            self.is_admin = False
-        
+
         super().save(*args, **kwargs)
     
 
