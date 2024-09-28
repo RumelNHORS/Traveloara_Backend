@@ -51,11 +51,31 @@ class UserLoginSerializer(serializers.Serializer):
 
 
 # All User List Serializer
+# class UserListSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = use_models.User  
+#         fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']
+#         # fields = '__all__'
+
 class UserListSerializer(serializers.ModelSerializer):
+    role = serializers.SerializerMethodField()
+
     class Meta:
-        model = use_models.User  
-        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser']
-        # fields = '__all__'
+        model = use_models.User
+        fields = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'is_guest', 'is_host', 'is_admin', 'is_superuser', 'role']
+
+    def get_role(self, obj):
+        roles = []
+        if obj.is_guest:
+            roles.append("Guest")
+        if obj.is_host:
+            roles.append("Host")
+        if obj.is_admin:
+            roles.append("Admin")
+        if obj.is_superuser:
+            roles.append("Superuser")
+        
+        return ", ".join(roles) if roles else "No Role"
 
 
 class ProfileSerializer(serializers.ModelSerializer):
