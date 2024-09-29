@@ -39,7 +39,7 @@ class Room(models.Model):
     property = models.ForeignKey('Property', on_delete=models.CASCADE)
     # e.g., Single, Double, Suite, etc.
     room_type = models.CharField(max_length=255)
-    room_number = models.CharField(max_length=10, unique=True)
+    room_number = models.CharField(max_length=10)
     price_per_night = models.DecimalField(max_digits=10, decimal_places=2)
     number_of_beds = models.PositiveIntegerField()
     room_capacity = models.PositiveIntegerField()

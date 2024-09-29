@@ -42,9 +42,31 @@ class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 
 # List all room by the Property and create new room for property
+# class RoomListCreateView(generics.ListCreateAPIView):
+#     queryset = hotel_models.Room.objects.all()
+#     serializer_class = hotel_serializers.RoomSerializer
+
 class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Get the room_number and property_id from the request data
+        room_number = request.data.get('room_number')
+        property_id = request.data.get('property')
+
+        # Check if the room_number already exists for the given property
+        existing_room = hotel_models.Room.objects.filter(room_number=room_number, property_id=property_id)
+        print('Existing room check:', existing_room.exists())
+
+        if existing_room.exists():
+            return Response(
+                {"room_number": ["Room with this room number already exists for this property."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # If it doesn't exist, call the super class's create method
+        return super().create(request, *args, **kwargs)
 
 
 # Retrive, Update, and Delete a specific Room
