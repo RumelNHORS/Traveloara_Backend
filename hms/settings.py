@@ -172,3 +172,5 @@ CORS_ALLOW_METHODS = [
     "DELETE",
     "OPTIONS",
 ]
+
+APPEND_SLASH=False
