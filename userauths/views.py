@@ -42,9 +42,14 @@ class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
         logger.debug(f'Request method: {request.method}')
         return self.update(request, *args, **kwargs)
 
+    # def patch(self, request, *args, **kwargs):
+    #     logger.debug(f'Request method: {request.method}')
+    #     return self.update(request, *args, **kwargs)
+
     def patch(self, request, *args, **kwargs):
         logger.debug(f'Request method: {request.method}')
-        return self.update(request, *args, **kwargs)
+        # Set partial=True to allow partial updates
+        return self.partial_update(request, *args, **kwargs)
     
 
 class UserProfileUpdateView(generics.RetrieveUpdateDestroyAPIView):
