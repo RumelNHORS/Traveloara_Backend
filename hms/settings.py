@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'hotel',
     'userauths',
+    'drf_yasg',
 ]
 
 # For Django Rest Framework
@@ -160,6 +161,7 @@ AUTH_USER_MODEL = "userauths.User"
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "https://traveloara-client.vercel.app",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
@@ -170,4 +172,7 @@ CORS_ALLOW_METHODS = [
     "PUT",
     "DELETE",
     "OPTIONS",
+    "PATCH",
 ]
+
+APPEND_SLASH=False

@@ -30,7 +30,7 @@ class User(AbstractUser):
     gender = models.CharField(max_length=20, choices=GENDER, default="Other")
 
     # User type fields
-    is_guest = models.BooleanField(default=False)
+    is_guest = models.BooleanField(default=True)
     is_host = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
@@ -82,11 +82,37 @@ class User(AbstractUser):
     #     super().save(*args, **kwargs)
 
     def save(self, *args, **kwargs):
-        # Set email as the default username if it's not already set
+    # Set email as the default username if it's not already set
         if not self.username:
             self.username = self.email
 
+        # Ensure only one type of user role is set to True
+        if self.is_guest:
+            self.is_host = False
+            self.is_admin = False
+            self.is_superuser = False
+        elif self.is_host:
+            self.is_guest = False
+            self.is_admin = False
+            self.is_superuser = False
+        elif self.is_admin:
+            self.is_guest = False
+            self.is_host = False
+            self.is_superuser = False
+        elif self.is_superuser:
+            self.is_guest = False
+            self.is_host = False
+            self.is_admin = False
+
+    # Call the original save method to persist changes
         super().save(*args, **kwargs)
+
+    # def save(self, *args, **kwargs):
+    #     # Set email as the default username if it's not already set
+    #     if not self.username:
+    #         self.username = self.email
+
+    #     super().save(*args, **kwargs)
     
 
 

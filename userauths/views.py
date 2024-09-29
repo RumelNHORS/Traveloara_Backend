@@ -5,6 +5,7 @@ from django.contrib.auth import login
 from userauths import serializers as userauth_serializers
 from userauths import models as userauth_models
 import logging
+from rest_framework.permissions import IsAuthenticated
 
 
 # User Register View
@@ -41,9 +42,14 @@ class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
         logger.debug(f'Request method: {request.method}')
         return self.update(request, *args, **kwargs)
 
+    # def patch(self, request, *args, **kwargs):
+    #     logger.debug(f'Request method: {request.method}')
+    #     return self.update(request, *args, **kwargs)
+
     def patch(self, request, *args, **kwargs):
         logger.debug(f'Request method: {request.method}')
-        return self.update(request, *args, **kwargs)
+        # Set partial=True to allow partial updates
+        return self.partial_update(request, *args, **kwargs)
     
 
 class UserProfileUpdateView(generics.RetrieveUpdateDestroyAPIView):
