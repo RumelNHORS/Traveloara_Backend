@@ -56,7 +56,7 @@ class RoomListCreateView(generics.ListCreateAPIView):
         user_id = self.request.query_params.get('user_id', None)
 
         if user_id:
-            # Filter rooms by the provided user_id from the Property model
+            # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             return hotel_models.Room.objects.filter(property__user_id=user_id)
         
         # If no user_id is provided, return all rooms
