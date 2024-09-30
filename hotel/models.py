@@ -70,3 +70,23 @@ class RoomAmenities(models.Model):
 
     def __str__(self):
         return f"{self.amenity_name} (Property: {self.property}, Room: {self.room})"
+    
+
+# Models for Hotel/Booking
+class Booking(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    payment_status = models.CharField(max_length=50)
+    email = models.EmailField()
+    phone = models.CharField(max_length=50)
+    property = models.ForeignKey('Property', on_delete=models.CASCADE)
+    room = models.ForeignKey('Room', on_delete=models.CASCADE)
+    before_discount = models.CharField(max_length=50, null=True, blank=True)
+    total = models.DecimalField(max_digits=10, decimal_places=2)
+    saved = models.DecimalField(max_digits=10, decimal_places=2)
+    checkin_date = models.DateField()
+    checkin_date = models.DateField()
+    total_days = models.PositiveIntegerField()
+    num_adult = models.PositiveIntegerField()
+    num_children = models.PositiveIntegerField()
+    num_infants = models.PositiveIntegerField()
+    payment_id = models.CharField(max_length=250)
