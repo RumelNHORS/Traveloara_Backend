@@ -50,6 +50,19 @@ class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
 
+    # For Filter the Rooms by the User Id
+    def get_queryset(self):
+        # Get user_id from query parameters
+        user_id = self.request.query_params.get('user_id', None)
+
+        if user_id:
+            # Filter rooms by the provided user_id from the Property model
+            return hotel_models.Room.objects.filter(property__user_id=user_id)
+        
+        # If no user_id is provided, return all rooms
+        return hotel_models.Room.objects.all()
+
+
     def create(self, request, *args, **kwargs):
         # Get the room_number and property_id from the request data
         room_number = request.data.get('room_number')
