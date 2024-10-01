@@ -89,7 +89,7 @@ class Booking(models.Model):
     room = models.ForeignKey('Room', on_delete=models.CASCADE)
     
     before_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    total = models.DecimalField(max_digits=10, decimal_places=2)
+    per_night = models.DecimalField(max_digits=10, decimal_places=2)
     saved = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     
     checkin_date = models.DateField()
@@ -101,9 +101,9 @@ class Booking(models.Model):
     num_infants = models.PositiveIntegerField(default=0)
     
     payment_id = models.CharField(max_length=250)
-    should_pay = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
-    created_date = models.DateTimeField(auto_now=True)
+    created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
     def __str__(self):

@@ -142,8 +142,8 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
             )
 
         # Calculate the total price and should_pay
-        total_price = room.price_per_night
-        should_pay = total_price * total_days
+        per_night = room.price_per_night
+        total_amount = per_night * total_days
 
         # Ensure the payment_status is a valid string, not a list
         payment_status = request.data.get('payment_status', 'Pending')
@@ -153,14 +153,14 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         # Ensure fields have the correct types (e.g., primary keys, decimal fields)
         try:
             booking_data = {
-                "user": request.data.get('user'),  # Expecting a single pk
+                "user": request.data.get('user'),
                 "payment_status": payment_status,
                 "email": request.data.get('email'),
                 "phone": request.data.get('phone'),
-                "property": request.data.get('property'),  # Expecting a single pk
-                "room": request.data.get('room'),  # Expecting a single pk
+                "property": request.data.get('property'),
+                "room": request.data.get('room'),
                 "before_discount": request.data.get('before_discount', None),
-                "total": total_price,
+                "per_night": per_night,
                 "saved": request.data.get('saved', None),
                 "checkin_date": checkin_date,
                 "checkout_date": checkout_date,
@@ -169,8 +169,8 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
                 "num_children": int(request.data.get('num_children', 0)),
                 "num_infants": int(request.data.get('num_infants', 0)),
                 "payment_id": request.data.get('payment_id'),
-                "should_pay": should_pay,
-                "created_date": request.data.get('created_date', timezone.now()),  # Use current time as default
+                "total_amount": total_amount,
+                "created_date": request.data.get('created_date', timezone.now()),
             }
         except ValueError as e:
             raise ValidationError({"error": f"Invalid data type: {str(e)}"})

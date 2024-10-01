@@ -44,4 +44,4 @@ class BookingSerializer(serializers.ModelSerializer):
     class Meta:
         model = hotel_models.Booking
         # fields = '__all__'
-        fields = ['id', 'user', 'email', 'phone', 'property', 'room', 'checkin_date', 'checkout_date', 'num_adult', 'num_children', 'num_infants', 'payment_id', '']    
+        fields = ['id', 'user', 'email', 'phone', 'property', 'room', 'checkin_date', 'checkout_date', 'num_adult', 'num_children', 'num_infants', 'payment_id']   
