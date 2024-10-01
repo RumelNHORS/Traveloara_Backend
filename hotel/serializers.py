@@ -21,9 +21,13 @@ class PropertySerializer(serializers.ModelSerializer):
 
 # Room Serializer
 class RoomSerializer(serializers.ModelSerializer):
+    # Add a custom field to display the address of the property
+    property_address = serializers.CharField(source='property.address', read_only=True)
     class Meta:
         model = hotel_models.Room
         fields = '__all__'
+        # Add 'property_address' as a custom field
+        extra_fields = ['property_address']
         
 
 class RoomAmenitiesSerializer(serializers.ModelSerializer):
