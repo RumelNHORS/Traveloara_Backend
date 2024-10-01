@@ -57,10 +57,16 @@ class RoomListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         # Get user_id from query parameters
         user_id = self.request.query_params.get('user_id', None)
+        # Get property_id from the query parameters
+        property_id = self.request.query_params.get('property_id', None)
 
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             return hotel_models.Room.objects.filter(property__user_id=user_id)
+        
+        # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
+        if property_id:
+            return hotel_models.Room.objects.filter(property_id=property_id)
         
         # If no user_id is provided, return all rooms
         return hotel_models.Room.objects.all()
