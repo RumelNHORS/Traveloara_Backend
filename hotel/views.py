@@ -5,6 +5,9 @@ from hotel import models as hotel_models
 from hotel import serializers as hotel_serializers
 from userauths import permissions as user_permission
 from rest_framework.response import Response
+from django.utils.dateparse import parse_date
+from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 
 
 
@@ -96,3 +99,90 @@ class RoomAmenitiesListCreateView(generics.ListCreateAPIView):
 class RoomAmenitiesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.RoomAmenities.objects.all()
     serializer_class = hotel_serializers.RoomAmenitiesSerializer
+
+
+# View for Booking Rooms
+class BookingListCreateAPIView(generics.ListCreateAPIView):
+    queryset = hotel_models.Booking.objects.all()
+    serializer_class = hotel_serializers.BookingSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Get the room and check its availability
+        room_id = request.data.get('room')
+        room = hotel_models.Room.objects.filter(id=room_id, is_available=True).first()
+
+        if not room:
+            return Response(
+                {"room": ["Room is not available for booking."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Parse the checkin and checkout dates
+        checkin_date = parse_date(request.data.get('checkin_date'))
+        checkout_date = parse_date(request.data.get('checkout_date'))
+
+        if not checkin_date or not checkout_date:
+            return Response(
+                {"dates": ["Invalid date format. Use YYYY-MM-DD."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if checkin_date >= checkout_date:
+            return Response(
+                {"dates": ["Checkout date must be after the checkin date."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Calculate total_days based on checkin and checkout dates
+        total_days = (checkout_date - checkin_date).days
+        if total_days <= 0:
+            return Response(
+                {"dates": ["Total days must be at least 1."]},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Calculate the total price and should_pay
+        total_price = room.price_per_night
+        should_pay = total_price * total_days
+
+        # Ensure the payment_status is a valid string, not a list
+        payment_status = request.data.get('payment_status', 'Pending')
+        if isinstance(payment_status, list):
+            payment_status = payment_status[0]
+
+        # Ensure fields have the correct types (e.g., primary keys, decimal fields)
+        try:
+            booking_data = {
+                "user": request.data.get('user'),  # Expecting a single pk
+                "payment_status": payment_status,
+                "email": request.data.get('email'),
+                "phone": request.data.get('phone'),
+                "property": request.data.get('property'),  # Expecting a single pk
+                "room": request.data.get('room'),  # Expecting a single pk
+                "before_discount": request.data.get('before_discount', None),
+                "total": total_price,
+                "saved": request.data.get('saved', None),
+                "checkin_date": checkin_date,
+                "checkout_date": checkout_date,
+                "total_days": total_days,
+                "num_adult": int(request.data.get('num_adult', 1)),
+                "num_children": int(request.data.get('num_children', 0)),
+                "num_infants": int(request.data.get('num_infants', 0)),
+                "payment_id": request.data.get('payment_id'),
+                "should_pay": should_pay,
+                "created_date": request.data.get('created_date', timezone.now()),  # Use current time as default
+            }
+        except ValueError as e:
+            raise ValidationError({"error": f"Invalid data type: {str(e)}"})
+
+        # Validate the serializer with the corrected data
+        serializer = self.get_serializer(data=booking_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+
+        # Mark the room as unavailable (optional)
+        room.is_available = False
+        room.save()
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
