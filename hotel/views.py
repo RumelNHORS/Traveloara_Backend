@@ -238,6 +238,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
 
         # Calculate total_days based on checkin and checkout dates
         total_days = (checkout_date - checkin_date).days
+        print('Total Days based on your checkin and checkout date:', total_days)
         if total_days <= 0:
             return Response(
                 {"dates": ["Total days must be at least 1."]},
@@ -247,6 +248,7 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
         # Calculate the total price and should_pay
         per_night = room.price_per_night
         total_amount = per_night * total_days
+        print('Total Amount for this Room based on your total days:', total_amount)
 
         # Ensure the payment_status is a valid string, not a list
         payment_status = request.data.get('payment_status', 'Pending')
@@ -265,7 +267,9 @@ class BookingListCreateAPIView(generics.ListCreateAPIView):
             )
 
         # Calculate total guests
-        total_guests = num_adult + num_children + num_infants
+        # total_guests = num_adult + num_children + num_infants
+        total_guests = num_adult + num_children
+        print('Total Guest based on the Number of Adult and the number of Children:', total_guests)
 
         # Ensure fields have the correct types (e.g., primary keys, decimal fields)
         try:
