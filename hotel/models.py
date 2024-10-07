@@ -99,7 +99,7 @@ class Booking(models.Model):
     num_adult = models.PositiveIntegerField()
     num_children = models.PositiveIntegerField(default=0)
     num_infants = models.PositiveIntegerField(default=0)
-    
+    total_guests = models.PositiveIntegerField(null=True, blank=True)
     payment_id = models.CharField(max_length=250)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
