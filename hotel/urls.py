@@ -17,5 +17,8 @@ urlpatterns = [
     path('amenities/', hotel_views.RoomAmenitiesListCreateView.as_view(), name='amenities_list_create'),
     # Update, Delete Aminities
     path('amenities/<int:pk>/', hotel_views.RoomAmenitiesDetailView.as_view(), name='amenities_detail'),
+
+    # List all messages for the user and allow creating new messages
+    path('messages/', hotel_views.ContactMessageListCreateView.as_view(), name='message_list_create'),
     
 ]

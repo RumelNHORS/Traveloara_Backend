@@ -107,4 +107,14 @@ class RoomAmenitiesDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = hotel_serializers.RoomAmenitiesSerializer
 
 
+# API to list and create messages without requiring authentication
+class ContactMessageListCreateView(generics.ListCreateAPIView):
+    serializer_class = hotel_serializers.ContactMessageSerializer
 
+    def get_queryset(self):
+        # For anonymous users, we'll need to ensure that no authentication is required
+        return hotel_models.ContactMessage.objects.all().order_by('-created_date')
+
+    def perform_create(self, serializer):
+
+        serializer.save()

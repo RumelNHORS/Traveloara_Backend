@@ -78,3 +78,14 @@ class RoomAmenities(models.Model):
     def __str__(self):
         return f"{self.amenity_name} (Property: {self.property}, Room: {self.room})"
     
+
+
+class ContactMessage(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages_sent')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages_received')
+    message = models.TextField(help_text="Enter your message here")
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Message from {self.sender.username} to {self.recipient.username}"
+    
