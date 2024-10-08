@@ -12,6 +12,13 @@ PROPERTY_STATUS = (
     ("Live", "Live"),
 )
 
+# Payment Status Choices
+PAYMENT_STATUS = (
+    ('Pending', 'Pending'),
+    ('Completed', 'Completed'),
+    ('Failed', 'Failed'),
+)
+
 
 # Models For Adding Property
 class Property(models.Model):
@@ -70,3 +77,26 @@ class RoomAmenities(models.Model):
 
     def __str__(self):
         return f"{self.amenity_name} (Property: {self.property}, Room: {self.room})"
+    
+
+
+class ContactMessage(models.Model):
+    sender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages_sent')
+    recipient = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='messages_received')
+    message = models.TextField(help_text="Enter your message here")
+    created_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Message from {self.sender.username} to {self.recipient.username}"
+    
+
+# Model For Client Review
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_review')
+    room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='room_review')
+    message = models.TextField()
+    create_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Review from {self.user.username} to {self.room.room_type}"
+    

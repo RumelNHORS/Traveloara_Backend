@@ -5,6 +5,9 @@ from hotel import models as hotel_models
 from hotel import serializers as hotel_serializers
 from userauths import permissions as user_permission
 from rest_framework.response import Response
+from django.utils.dateparse import parse_date
+from rest_framework.exceptions import ValidationError
+from django.utils import timezone
 
 
 
@@ -50,6 +53,25 @@ class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
 
+    # For Filter the Rooms by the User Id
+    def get_queryset(self):
+        # Get user_id from query parameters
+        user_id = self.request.query_params.get('user_id', None)
+        # Get property_id from the query parameters
+        property_id = self.request.query_params.get('property_id', None)
+
+        if user_id:
+            # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
+            return hotel_models.Room.objects.filter(property__user_id=user_id)
+        
+        # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
+        if property_id:
+            return hotel_models.Room.objects.filter(property_id=property_id)
+        
+        # If no user_id is provided, return all rooms
+        return hotel_models.Room.objects.all()
+
+
     def create(self, request, *args, **kwargs):
         # Get the room_number and property_id from the request data
         room_number = request.data.get('room_number')
@@ -83,3 +105,23 @@ class RoomAmenitiesListCreateView(generics.ListCreateAPIView):
 class RoomAmenitiesDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.RoomAmenities.objects.all()
     serializer_class = hotel_serializers.RoomAmenitiesSerializer
+
+
+# API to list and create messages without requiring authentication
+class ContactMessageListCreateView(generics.ListCreateAPIView):
+    serializer_class = hotel_serializers.ContactMessageSerializer
+
+    def get_queryset(self):
+        # For anonymous users, we'll need to ensure that no authentication is required
+        return hotel_models.ContactMessage.objects.all().order_by('-created_date')
+
+    def perform_create(self, serializer):
+
+        serializer.save()
+
+
+# View for Guest Review
+class ReviewListCreateAPIView(generics.ListCreateAPIView):
+    queryset = hotel_models.Review.objects.all()
+    serializer_class = hotel_serializers.ReviewSerializer
+
