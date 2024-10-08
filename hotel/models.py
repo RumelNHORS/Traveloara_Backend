@@ -89,3 +89,14 @@ class ContactMessage(models.Model):
     def __str__(self):
         return f"Message from {self.sender.username} to {self.recipient.username}"
     
+
+# Model For Client Review
+class Review(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_review')
+    room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='room_review')
+    message = models.TextField()
+    create_date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"Review from {self.user.username} to {self.room.room_type}"
+    
