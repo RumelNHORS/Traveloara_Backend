@@ -78,33 +78,3 @@ class RoomAmenities(models.Model):
     def __str__(self):
         return f"{self.amenity_name} (Property: {self.property}, Room: {self.room})"
     
-
-# Models for Hotel/Booking
-class Booking(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    payment_status = models.CharField(max_length=50, choices= PAYMENT_STATUS, default='Pending')
-    email = models.EmailField()
-    phone = models.CharField(max_length=50)
-    property = models.ForeignKey('Property', on_delete=models.CASCADE)
-    room = models.ForeignKey('Room', on_delete=models.CASCADE)
-    
-    before_discount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    per_night = models.DecimalField(max_digits=10, decimal_places=2)
-    saved = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    
-    checkin_date = models.DateField()
-    checkout_date = models.DateField()
-    
-    total_days = models.PositiveIntegerField()
-    num_adult = models.PositiveIntegerField()
-    num_children = models.PositiveIntegerField(default=0)
-    num_infants = models.PositiveIntegerField(default=0)
-    total_guests = models.PositiveIntegerField(null=True, blank=True)
-    payment_id = models.CharField(max_length=250)
-    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    
-    created_date = models.DateTimeField(default=timezone.now)
-    updated_date = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f'Booking for {self.room} by {self.user}'

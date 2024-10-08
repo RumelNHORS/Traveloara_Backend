@@ -17,6 +17,5 @@ urlpatterns = [
     path('amenities/', hotel_views.RoomAmenitiesListCreateView.as_view(), name='amenities_list_create'),
     # Update, Delete Aminities
     path('amenities/<int:pk>/', hotel_views.RoomAmenitiesDetailView.as_view(), name='amenities_detail'),
-    # Booking Url
-    path('bookings/', hotel_views.BookingListCreateAPIView.as_view(), name='booking_create'),
+    
 ]

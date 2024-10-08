@@ -41,35 +41,5 @@ class RoomAmenitiesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-# Serializer for the Booking
-# class BookingSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = hotel_models.Booking
-#         fields = '__all__'
-        # fields = ['id', 'user', 'email', 'phone', 'property', 'room', 'checkin_date', 'checkout_date', 'num_adult', 'num_children', 'num_infants', 'payment_id']
 
-
-
-class BookingSerializer(serializers.ModelSerializer):
-    user_name = serializers.CharField(source='user.username', read_only=True)
-    property_name = serializers.CharField(source='property.property_name', read_only=True)
-    room_details = serializers.SerializerMethodField()
-
-    class Meta:
-        model = hotel_models.Booking
-        fields = [
-            'id', 'payment_status', 'email', 'phone', 'before_discount', 'per_night', 'saved', 
-            'checkin_date', 'checkout_date', 'total_days', 'num_adult', 'num_children', 'num_infants',
-            'total_guests', 'payment_id', 'total_amount', 'created_date', 'updated_date',
-            'user', 'user_name', 'property', 'property_name', 'room', 'room_details'
-        ]
-
-    def get_room_details(self, obj):
-        """Get details of the room."""
-        room = obj.room
-        return {
-            "room_number": room.room_number,
-            "room_type": room.room_type,
-            "price_per_night": room.price_per_night
-        }
     
