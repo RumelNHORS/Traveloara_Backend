@@ -45,7 +45,7 @@ class RoomAmenitiesSerializer(serializers.ModelSerializer):
 class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = hotel_models.ContactMessage
-        fields = ['sender', 'recipient', 'message', 'created_date']
+        fields = ['id', 'sender', 'recipient', 'message', 'created_date']
 
     def to_representation(self, instance):
         """Override to customize how the message is serialized."""
@@ -97,3 +97,19 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 
 #         return message
     
+
+# Serializer for the Guest Review
+class ReviewSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+    room_type = serializers.SerializerMethodField()
+
+    class Meta:
+        model = hotel_models.Review
+        fields = ['id', 'user', 'username', 'room', 'room_type', 'message']
+
+    def get_username(self, obj):
+        return obj.user.username
+
+    def get_room_type(self, obj):
+        return obj.room.room_type
+

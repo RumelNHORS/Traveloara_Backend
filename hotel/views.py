@@ -118,3 +118,10 @@ class ContactMessageListCreateView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
 
         serializer.save()
+
+
+# View for Guest Review
+class ReviewListCreateAPIView(generics.ListCreateAPIView):
+    queryset = hotel_models.Review.objects.all()
+    serializer_class = hotel_serializers.ReviewSerializer
+
