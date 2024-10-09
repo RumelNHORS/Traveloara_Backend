@@ -67,28 +67,22 @@ class RoomListCreateView(generics.ListCreateAPIView):
 
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
-            # return hotel_models.Room.objects.filter(property__user_id=user_id)
             queryset = queryset.filter(property__user_id=user_id)
         
         # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
         if property_id:
-            # return hotel_models.Room.objects.filter(property_id=property_id)
             queryset = queryset.filter(property_id=property_id)
         
         # Filter by city if provided
         if city:
             queryset = queryset.filter(property__city__icontains=city)
-            print('#######################################')
-            print('queryser:', queryset)
 
         # Filter by room capacity if provided (?room_capacity=3)
         if room_capacity:
             queryset = queryset.filter(room_capacity__gte=room_capacity)
-            
+
         # Filter the room by the room and the room capacity (?city=dhaka&room_capacity=3)
         
-        # If no user_id is provided, return all rooms
-        # return hotel_models.Room.objects.all()
         return queryset
 
 
