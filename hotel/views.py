@@ -65,6 +65,14 @@ class RoomListCreateView(generics.ListCreateAPIView):
         city = self.request.query_params.get('city', None)
         room_capacity = self.request.query_params.get('room_capacity', None)
 
+        # Boolean field filters
+        is_available = self.request.query_params.get('is_available', None)
+        is_smoking = self.request.query_params.get('is_smoking', None)
+        is_media = self.request.query_params.get('is_media', None)
+        is_event = self.request.query_params.get('is_event', None)
+        is_unmarried = self.request.query_params.get('is_unmarried', None)
+        is_pet = self.request.query_params.get('is_pet', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             queryset = queryset.filter(property__user_id=user_id)
@@ -83,6 +91,32 @@ class RoomListCreateView(generics.ListCreateAPIView):
 
         # Filter the room by the room and the room capacity (?city=dhaka&room_capacity=3)
         
+        # [?is_available=True&is_smoking=True&is_media=False]
+        # Filter by is_available if provided
+        if is_available is not None:
+            queryset = queryset.filter(is_available=is_available)
+
+        # Filter by is_smoking if provided
+        if is_smoking is not None:
+            queryset = queryset.filter(is_smoking=is_smoking)
+
+        # Filter by is_media if provided
+        if is_media is not None:
+            queryset = queryset.filter(is_media=is_media)
+
+        # Filter by is_event if provided
+        if is_event is not None:
+            queryset = queryset.filter(is_event=is_event)
+
+        # Filter by is_unmarried if provided
+        if is_unmarried is not None:
+            queryset = queryset.filter(is_unmarried=is_unmarried)
+
+        # Filter by is_pet if provided
+        if is_pet is not None:
+            queryset = queryset.filter(is_pet=is_pet)
+
+
         return queryset
 
 
