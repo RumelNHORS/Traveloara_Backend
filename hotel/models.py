@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+import datetime
 
 
 # Choices for hotel status
@@ -81,8 +82,8 @@ class Room(models.Model):
     is_pet = models.BooleanField(default=False)
 
     # Checkin and Check out
-    check_in = models.TimeField()
-    check_out = models.TimeField()
+    check_in = models.TimeField(default=datetime.time(12, 0))
+    check_out = models.TimeField(default=datetime.time(11, 0))
 
     # Cancelation Policy
     canceletion_policy = models.CharField(max_length=250, choices=CANCELATION_CHOICE, default='Flexible')
