@@ -19,6 +19,13 @@ PAYMENT_STATUS = (
     ('Failed', 'Failed'),
 )
 
+# Cancelation policy Choice
+CANCELATION_CHOICE = (
+    ('Non Refundable', 'Non Refundable'),
+    ('Flexible', 'Flexible'),
+    ('Moderate', 'Moderate'),
+)
+
 
 # Models For Adding Property
 class Property(models.Model):
@@ -65,6 +72,21 @@ class Room(models.Model):
     image3 = models.ImageField(upload_to='rooms/', blank=True, null=True)
     image4 = models.ImageField(upload_to='rooms/', blank=True, null=True)
     image5 = models.ImageField(upload_to='rooms/', blank=True, null=True)
+
+    # Adding room amenities
+    is_smoking = models.BooleanField(default=False)
+    is_media = models.BooleanField(default=False)
+    is_event = models.BooleanField(default=False)
+    is_unmarried = models.BooleanField(default=False)
+    is_pet = models.BooleanField(default=False)
+
+    # Checkin and Check out
+    check_in = models.TimeField()
+    check_out = models.TimeField()
+
+    # Cancelation Policy
+    canceletion_policy = models.CharField(max_length=250, choices=CANCELATION_CHOICE, default='Flexible')
+
 
     def __str__(self):
         return f'{self.room_type} - Room No. {self.room_number}'
