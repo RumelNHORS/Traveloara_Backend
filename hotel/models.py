@@ -61,6 +61,7 @@ class Room(models.Model):
     number_of_bedrooms = models.PositiveIntegerField()
     number_of_bathrooms = models.PositiveIntegerField()
     description = models.TextField()
+    room_amenities = models.TextField()
     # map_url = models.URLField(max_length=200, blank=True, null=True)
     map_url = models.TextField()
     is_available = models.BooleanField(default=True)
