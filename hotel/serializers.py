@@ -23,13 +23,14 @@ class PropertySerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     # Add a custom field to display the address of the property
     property_address = serializers.CharField(source='property.address', read_only=True)
+    city = serializers.CharField(source='property.city', read_only =True)
     # Custom field to display the user id of the property's owner
     user_id = serializers.IntegerField(source='property.user.id', read_only=True)
     class Meta:
         model = hotel_models.Room
         fields = '__all__'
         # Add 'property_address' as a custom field
-        extra_fields = ['property_address', 'user_id']
+        extra_fields = ['property_address', 'city', 'user_id']
         
 
 class RoomAmenitiesSerializer(serializers.ModelSerializer):

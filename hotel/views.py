@@ -53,23 +53,43 @@ class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
 
-    # For Filter the Rooms by the User Id
+    # For filtering the rooms by User ID, Property ID, City, and Room Capacity
     def get_queryset(self):
+        queryset = hotel_models.Room.objects.all()
+
         # Get user_id from query parameters
         user_id = self.request.query_params.get('user_id', None)
         # Get property_id from the query parameters
         property_id = self.request.query_params.get('property_id', None)
 
+        city = self.request.query_params.get('city', None)
+        room_capacity = self.request.query_params.get('room_capacity', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
-            return hotel_models.Room.objects.filter(property__user_id=user_id)
+            # return hotel_models.Room.objects.filter(property__user_id=user_id)
+            queryset = queryset.filter(property__user_id=user_id)
         
         # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
         if property_id:
-            return hotel_models.Room.objects.filter(property_id=property_id)
+            # return hotel_models.Room.objects.filter(property_id=property_id)
+            queryset = queryset.filter(property_id=property_id)
+        
+        # Filter by city if provided
+        if city:
+            queryset = queryset.filter(property__city__icontains=city)
+            print('#######################################')
+            print('queryser:', queryset)
+
+        # Filter by room capacity if provided (?room_capacity=3)
+        if room_capacity:
+            queryset = queryset.filter(room_capacity__gte=room_capacity)
+            
+        # Filter the room by the room and the room capacity (?city=dhaka&room_capacity=3)
         
         # If no user_id is provided, return all rooms
-        return hotel_models.Room.objects.all()
+        # return hotel_models.Room.objects.all()
+        return queryset
 
 
     def create(self, request, *args, **kwargs):
