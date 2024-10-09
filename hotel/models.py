@@ -40,8 +40,8 @@ class Property(models.Model):
     # city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     city = models.CharField(max_length=20)
     status = models.CharField(max_length=10, choices=PROPERTY_STATUS, default='Live')
-    # New field for comma-separated amenities
-    # amenities = models.CharField(max_length=255, blank=True, help_text="Comma separated amenities, e.g., Wi-Fi, Parking, Pool")
+    # New field for amenities
+    amenities = models.TextField(max_length=255, blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
