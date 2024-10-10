@@ -8,6 +8,10 @@ from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from rest_framework.exceptions import ValidationError
 from django.utils import timezone
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+# from rest_framework.permissions import IsAdminUser
+from userauths.permissions import IsGuestUser, IsHostUser, IsAdminUser, IsSuperUser
+from rest_framework.exceptions import PermissionDenied
 
 
 
@@ -15,33 +19,62 @@ from django.utils import timezone
 class PropertyListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Property.objects.all()
     serializer_class = hotel_serializers.PropertySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsHostUser|IsAdminUser|IsSuperUser]
+    
 
-    # For Filter the Property by using the email. (GET /properties/?email=example@example.com)
+    # def get_queryset(self):
+    #     # Get the current user
+    #     user = self.request.user
+    #     print('Current_User:', user)
+
+    #     # Fetch all properties by the logged-in user
+    #     queryset = hotel_models.Property.objects.filter(user=user)
+
+    #     # Filter the Property by using the email. (GET /properties/?email=example@example.com)
+    #     email = self.request.query_params.get('email', None)
+    #     if email:
+    #         queryset = queryset.filter(email__icontains=email)
+
+    #     return queryset
+
     def get_queryset(self):
-        queryset = hotel_models.Property.objects.all()
+        # Get the current user
+        user = self.request.user
+        print('Current_User:', user)
+
+        # Check if the user is an admin or superuser
+        if user.is_admin or user.is_superuser:
+            # If the user is an admin or superuser, return all properties
+            return hotel_models.Property.objects.all()
+
+        # Otherwise, fetch all properties by the logged-in user
+        queryset = hotel_models.Property.objects.filter(user=user)
+
+        # Filter the Property by using the email. (GET /properties/?email=example@example.com)
         email = self.request.query_params.get('email', None)
         if email:
             queryset = queryset.filter(email__icontains=email)
+
         return queryset
 
-    # Custom permission logic for creating properties (POST request)
-    # def post(self, request, *args, **kwargs):
-    #     if not request.user.is_authenticated:
-    #         return Response({"error": "You must be authenticated to add properties."}, status=status.HTTP_403_FORBIDDEN)
-        
-    #     # Checking if the user is a HostUser, Admin, or SuperUser
-    #     if not (user_permission.IsHostUser.has_permission(self, request, self) or 
-    #             user_permission.IsAdminUser.has_permission(self, request, self) or 
-    #             user_permission.IsSuperUser.has_permission(self, request, self)):
-    #         return Response({"error": "You do not have permission to create properties."}, status=status.HTTP_403_FORBIDDEN)
-        
-    #     # If the user has the necessary permissions, allow the creation
-    #     return super().post(request, *args, **kwargs)
 
 # Retrieve, Update, and Delete a specific property
 class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = hotel_models.Property.objects.all()
     serializer_class = hotel_serializers.PropertySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsHostUser|IsAdminUser|IsSuperUser]
+
+    def perform_update(self, serializer):
+        # Check if the requesting user is the owner of the property
+        if self.get_object().user != self.request.user:
+            raise PermissionDenied("You do not have permission to update this property.")
+        serializer.save()
+
+    def perform_destroy(self, instance):
+        # Check if the requesting user is the owner of the property
+        if instance.user != self.request.user:
+            raise PermissionDenied("You do not have permission to delete this property.")
+        instance.delete()
 
 
 # List all room by the Property and create new room for property
