@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.conf import settings
+import datetime
 
 
 # Choices for hotel status
@@ -39,8 +40,8 @@ class Property(models.Model):
     # city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True)
     city = models.CharField(max_length=20)
     status = models.CharField(max_length=10, choices=PROPERTY_STATUS, default='Live')
-    # New field for comma-separated amenities
-    # amenities = models.CharField(max_length=255, blank=True, help_text="Comma separated amenities, e.g., Wi-Fi, Parking, Pool")
+    # New field for amenities
+    amenities = models.TextField(max_length=255, blank=True, null=True)
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
 
@@ -60,6 +61,7 @@ class Room(models.Model):
     number_of_bedrooms = models.PositiveIntegerField()
     number_of_bathrooms = models.PositiveIntegerField()
     description = models.TextField()
+    room_amenities = models.TextField()
     # map_url = models.URLField(max_length=200, blank=True, null=True)
     map_url = models.TextField()
     is_available = models.BooleanField(default=True)
@@ -81,8 +83,8 @@ class Room(models.Model):
     is_pet = models.BooleanField(default=False)
 
     # Checkin and Check out
-    check_in = models.TimeField()
-    check_out = models.TimeField()
+    check_in = models.TimeField(default=datetime.time(12, 0))
+    check_out = models.TimeField(default=datetime.time(11, 0))
 
     # Cancelation Policy
     canceletion_policy = models.CharField(max_length=250, choices=CANCELATION_CHOICE, default='Flexible')

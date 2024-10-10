@@ -53,23 +53,79 @@ class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
 
-    # For Filter the Rooms by the User Id
+    # For filtering the rooms by User ID, Property ID, City, and Room Capacity
     def get_queryset(self):
+        queryset = hotel_models.Room.objects.all()
+
         # Get user_id from query parameters
         user_id = self.request.query_params.get('user_id', None)
         # Get property_id from the query parameters
         property_id = self.request.query_params.get('property_id', None)
 
+        city = self.request.query_params.get('city', None)
+        room_capacity = self.request.query_params.get('room_capacity', None)
+
+        # Boolean field filters
+        is_available = self.request.query_params.get('is_available', None)
+        is_smoking = self.request.query_params.get('is_smoking', None)
+        is_media = self.request.query_params.get('is_media', None)
+        is_event = self.request.query_params.get('is_event', None)
+        is_unmarried = self.request.query_params.get('is_unmarried', None)
+        is_pet = self.request.query_params.get('is_pet', None)
+
+        # Price range filters
+        price_min = self.request.query_params.get('price_min', None)
+        price_max = self.request.query_params.get('price_max', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
-            return hotel_models.Room.objects.filter(property__user_id=user_id)
+            queryset = queryset.filter(property__user_id=user_id)
         
         # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
         if property_id:
-            return hotel_models.Room.objects.filter(property_id=property_id)
+            queryset = queryset.filter(property_id=property_id)
         
-        # If no user_id is provided, return all rooms
-        return hotel_models.Room.objects.all()
+        # Filter by city if provided
+        if city:
+            queryset = queryset.filter(property__city__icontains=city)
+
+        # Filter by room capacity if provided (?room_capacity=3)
+        if room_capacity:
+            queryset = queryset.filter(room_capacity__gte=room_capacity)
+
+        # Filter the room by the room and the room capacity (?city=dhaka&room_capacity=3)
+        
+        # [?is_available=True&is_smoking=True&is_media=False]
+        # Filter by is_available if provided
+        if is_available is not None:
+            queryset = queryset.filter(is_available=is_available)
+
+        # Filter by is_smoking if provided
+        if is_smoking is not None:
+            queryset = queryset.filter(is_smoking=is_smoking)
+
+        # Filter by is_media if provided
+        if is_media is not None:
+            queryset = queryset.filter(is_media=is_media)
+
+        # Filter by is_event if provided
+        if is_event is not None:
+            queryset = queryset.filter(is_event=is_event)
+
+        # Filter by is_unmarried if provided
+        if is_unmarried is not None:
+            queryset = queryset.filter(is_unmarried=is_unmarried)
+
+        # Filter by is_pet if provided
+        if is_pet is not None:
+            queryset = queryset.filter(is_pet=is_pet)
+
+        # Filter by price range using price_per_night (?price_min=500&price_max=700, ?price_min=500, ?price_max=700)
+        if price_min is not None and price_max is not None:
+            queryset = queryset.filter(price_per_night__range=(price_min, price_max))
+            
+
+        return queryset
 
 
     def create(self, request, *args, **kwargs):
