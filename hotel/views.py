@@ -73,6 +73,10 @@ class RoomListCreateView(generics.ListCreateAPIView):
         is_unmarried = self.request.query_params.get('is_unmarried', None)
         is_pet = self.request.query_params.get('is_pet', None)
 
+        # Price range filters
+        price_min = self.request.query_params.get('price_min', None)
+        price_max = self.request.query_params.get('price_max', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             queryset = queryset.filter(property__user_id=user_id)
@@ -116,6 +120,10 @@ class RoomListCreateView(generics.ListCreateAPIView):
         if is_pet is not None:
             queryset = queryset.filter(is_pet=is_pet)
 
+        # Filter by price range using price_per_night (?price_min=500&price_max=700, ?price_min=500, ?price_max=700)
+        if price_min is not None and price_max is not None:
+            queryset = queryset.filter(price_per_night__range=(price_min, price_max))
+            
 
         return queryset
 
