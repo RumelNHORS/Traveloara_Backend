@@ -6,6 +6,7 @@ from userauths import serializers as userauth_serializers
 from userauths import models as userauth_models
 import logging
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authentication import SessionAuthentication
 
 
 # User Register View
@@ -33,10 +34,22 @@ class UserListView(generics.ListAPIView):
     serializer_class = userauth_serializers.UserListSerializer
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    """
+    Custom session authentication class that disables CSRF checks.
+    """
+    def enforce_csrf(self, request):
+        # This method is overridden to skip CSRF validation.
+        return
+
+
 logger = logging.getLogger(__name__)
 class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = userauth_models.User.objects.all()
     serializer_class = userauth_serializers.UserListSerializer
+    # Use the custom session authentication without CSRF check
+    authentication_classes = [CsrfExemptSessionAuthentication]
+
 
     def put(self, request, *args, **kwargs):
         logger.debug(f'Request method: {request.method}')
