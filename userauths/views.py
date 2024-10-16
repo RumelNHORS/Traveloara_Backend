@@ -9,14 +9,25 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import SessionAuthentication
 
 
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    """
+    Custom session authentication class that disables CSRF checks.
+    """
+    def enforce_csrf(self, request):
+        # This method is overridden to skip CSRF validation.
+        return
+
+
 # User Register View
 class UserRegisterView(generics.CreateAPIView):
     queryset = userauth_models.User.objects.all()
     serializer_class = userauth_serializers.UserRegisterSerializer
+    authentication_classes = [CsrfExemptSessionAuthentication]
 
 
 # User Loggin View
 class UserLoginView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
     def post(self, request, *args, **kwargs):
         serializer = userauth_serializers.UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -33,14 +44,6 @@ class UserListView(generics.ListAPIView):
     queryset = userauth_models.User.objects.all()
     serializer_class = userauth_serializers.UserListSerializer
 
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    """
-    Custom session authentication class that disables CSRF checks.
-    """
-    def enforce_csrf(self, request):
-        # This method is overridden to skip CSRF validation.
-        return
 
 
 logger = logging.getLogger(__name__)
@@ -68,13 +71,14 @@ class UserUpdateView(generics.RetrieveUpdateDestroyAPIView):
 class UserProfileUpdateView(generics.RetrieveUpdateDestroyAPIView):
     queryset = userauth_models.User.objects.all()
     serializer_class = userauth_serializers.UserUpdateSerializer
+    authentication_classes = [CsrfExemptSessionAuthentication]
 
     def put(self, request, *args, **kwargs):
-        logger.debug(f"Request data: {request.data}")  # Logs the data for debugging
+        logger.debug(f"Request data: {request.data}")
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        logger.debug(f"Request data: {request.data}")  # Logs the data for debugging
+        logger.debug(f"Request data: {request.data}")
         return self.partial_update(request, *args, **kwargs)
 
     def update(self, request, *args, **kwargs):
