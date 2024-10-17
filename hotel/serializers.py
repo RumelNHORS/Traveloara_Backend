@@ -45,34 +45,41 @@ class ContactMessageSerializer(serializers.ModelSerializer):
     class Meta:
         model = hotel_models.ContactMessage
         fields = ['id', 'sender', 'recipient', 'message', 'created_date']
+
     def to_representation(self, instance):
         """Override to customize how the message is serialized."""
         representation = super().to_representation(instance)
         # Hide phone numbers and email addresses in the message
         representation['message'] = self.hide_contact_info(representation['message'])
         return representation
+    
     def hide_contact_info(self, message):
         """Hide phone numbers and email addresses."""
         # Regex for phone numbers (basic example, can be adjusted)
         phone_pattern = r'\b\d{10,15}\b'
         # Regex for email addresses
         email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
+        
         # Replace phone numbers with '[HIDDEN]'
         message = re.sub(phone_pattern, '[HIDDEN]', message)
         # Replace email addresses with '[HIDDEN]'
         message = re.sub(email_pattern, '[HIDDEN]', message)
+
         return message
+    
 # This is for hiding the phone nmber including the spech(0 1 5 3 8 5 4 2 4 5)
 # class ContactMessageSerializer(serializers.ModelSerializer):
 #     class Meta:
 #         model = hotel_models.ContactMessage
 #         fields = ['sender', 'recipient', 'message', 'created_date']
+
 #     def to_representation(self, instance):
 #         """Override to customize how the message is serialized."""
 #         representation = super().to_representation(instance)
 #         # Hide phone numbers and email addresses in the message
 #         representation['message'] = self.hide_contact_info(representation['message'])
 #         return representation
+
 #     def hide_contact_info(self, message):
 #         """Hide phone numbers and email addresses."""
 #         # Regex for phone numbers with optional spaces between digits
@@ -83,6 +90,7 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 #         message = re.sub(phone_pattern, '[HIDDEN]', message)
 #         # Replace email addresses with '[HIDDEN]'
 #         message = re.sub(email_pattern, '[HIDDEN]', message)
+
 #         return message
 # Serializer for the Guest Review
 
@@ -92,7 +100,7 @@ class ReviewSerializer(serializers.ModelSerializer):
     room_type = serializers.SerializerMethodField()
     class Meta:
         model = hotel_models.Review
-        fields = ['id', 'user', 'username', 'room', 'room_type', 'message']
+        fields = ['id', 'user', 'username', 'room', 'room_type', 'rating', 'message']
     def get_username(self, obj):
         return obj.user.username
     def get_room_type(self, obj):

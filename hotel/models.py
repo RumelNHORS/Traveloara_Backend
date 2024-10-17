@@ -2,6 +2,8 @@ from django.db import models
 from django.utils import timezone
 from django.conf import settings
 import datetime
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 # Choices for hotel status
 PROPERTY_STATUS = (
     ("Draft", "Draft"),
@@ -103,6 +105,9 @@ class Review(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_review')
     room = models.ForeignKey('Room', on_delete=models.CASCADE, related_name='room_review')
     message = models.TextField()
+    # Assuming the rating scale is 1 to 5
+    rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5)],help_text="Rate the room from 1 (worst) to 5 (best)")
     create_date = models.DateTimeField(default=timezone.now)
+    
     def __str__(self):
-        return f"Review from {self.user.username} to {self.room.room_type}"
+        return f"Review from {self.user.username} to {self.room.room_type} - Rating: {self.rating}/5"
