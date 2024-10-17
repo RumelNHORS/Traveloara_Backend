@@ -24,6 +24,19 @@ CANCELATION_CHOICE = (
     ('Flexible', 'Flexible'),
     ('Moderate', 'Moderate'),
 )
+
+# Property Type Choices
+PROPERTY_TYPE_CHOICES = [
+    ('Room', 'Room'),
+    ('Hotel', 'Hotel'),
+    ('Resort', 'Resort'),
+    ('Office Space', 'Office Space'),
+    ('Hotel Apartment', 'Hotel Apartment'),
+    ('Apartment', 'Apartment'),
+    ('Paying Guest (PG)', 'Paying Guest (PG)'),
+    ('Store', 'Store'),
+]
+
 # Models For Adding Property
 class Property(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -38,6 +51,10 @@ class Property(models.Model):
     status = models.CharField(max_length=10, choices=PROPERTY_STATUS, default='Live')
     # New field for comma-separated amenities
     # amenities = models.CharField(max_length=255, blank=True, help_text="Comma separated amenities, e.g., Wi-Fi, Parking, Pool")
+    
+    # New field for property type
+    property_type = models.CharField(max_length=50, choices=PROPERTY_TYPE_CHOICES, default='Room')
+
     created_date = models.DateTimeField(default=timezone.now)
     updated_date = models.DateTimeField(auto_now=True)
     def __str__(self):

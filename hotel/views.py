@@ -15,24 +15,21 @@ from django.utils import timezone
 class PropertyListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Property.objects.all()
     serializer_class = hotel_serializers.PropertySerializer
-    # For Filter the Property by using the email. (GET /properties/?email=example@example.com)
+
     def get_queryset(self):
         queryset = hotel_models.Property.objects.all()
         email = self.request.query_params.get('email', None)
+        property_type = self.request.query_params.get('property_type', None)
+
+        # For Filter the Property by using the email.(GET /properties/?email=example@example.com)
         if email:
             queryset = queryset.filter(email__icontains=email)
+
+        # For Filter the Property by using the email.(GET /properties/??property_type=resort)
+        if property_type:
+            queryset = queryset.filter(property_type__icontains=property_type)
+
         return queryset
-    # Custom permission logic for creating properties (POST request)
-    # def post(self, request, *args, **kwargs):
-    #     if not request.user.is_authenticated:
-    #         return Response({"error": "You must be authenticated to add properties."}, status=status.HTTP_403_FORBIDDEN)
-    #     # Checking if the user is a HostUser, Admin, or SuperUser
-    #     if not (user_permission.IsHostUser.has_permission(self, request, self) or
-    #             user_permission.IsAdminUser.has_permission(self, request, self) or
-    #             user_permission.IsSuperUser.has_permission(self, request, self)):
-    #         return Response({"error": "You do not have permission to create properties."}, status=status.HTTP_403_FORBIDDEN)
-    #     # If the user has the necessary permissions, allow the creation
-    #     return super().post(request, *args, **kwargs)
 
 
 
