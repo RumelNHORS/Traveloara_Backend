@@ -47,20 +47,32 @@ class PropertyDetailView(generics.RetrieveUpdateDestroyAPIView):
 class RoomListCreateView(generics.ListCreateAPIView):
     queryset = hotel_models.Room.objects.all()
     serializer_class = hotel_serializers.RoomSerializer
+
     # For Filter the Rooms by the User Id
     def get_queryset(self):
         # Get user_id from query parameters
         user_id = self.request.query_params.get('user_id', None)
         # Get property_id from the query parameters
         property_id = self.request.query_params.get('property_id', None)
+        # Get property_type from query parameters
+        property_type = self.request.query_params.get('property_type', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             return hotel_models.Room.objects.filter(property__user_id=user_id)
+        
         # Filter rooms by property_id if provided (GET /rooms/?property_id=5)
         if property_id:
             return hotel_models.Room.objects.filter(property_id=property_id)
+        
+        # Filter rooms by property_type (GET /rooms/?property_type=Hotel)
+        if property_type:
+            return hotel_models.Room.objects.filter(property__property_type__icontains=property_type)
+        
         # If no user_id is provided, return all rooms
         return hotel_models.Room.objects.all()
+    
+    
     def create(self, request, *args, **kwargs):
         # Get the room_number and property_id from the request data
         room_number = request.data.get('room_number')
@@ -68,6 +80,7 @@ class RoomListCreateView(generics.ListCreateAPIView):
         # Check if the room_number already exists for the given property
         existing_room = hotel_models.Room.objects.filter(room_number=room_number, property_id=property_id)
         print('Existing room check:', existing_room.exists())
+
         if existing_room.exists():
             return Response(
                 {"room_number": ["Room with this room number already exists for this property."]},

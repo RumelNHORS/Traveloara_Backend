@@ -13,7 +13,7 @@ class PropertySerializer(serializers.ModelSerializer):
     def update(self, instance, validated_data):
         # If 'image' is not in validated_data, we retain the existing image
         image = validated_data.get('image', None)
-        
+
         if image is None:
             # If no image provided, keep the current image
             validated_data['image'] = instance.image
@@ -26,6 +26,7 @@ class RoomSerializer(serializers.ModelSerializer):
     property_address = serializers.CharField(source='property.address', read_only=True)
     # Custom field to display the user id of the property's owner
     user_id = serializers.IntegerField(source='property.user.id', read_only=True)
+    
     class Meta:
         model = hotel_models.Room
         fields = '__all__'
