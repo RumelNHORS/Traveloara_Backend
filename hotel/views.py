@@ -113,3 +113,7 @@ class ContactMessageListCreateView(generics.ListCreateAPIView):
 class ReviewListCreateAPIView(generics.ListCreateAPIView):
     queryset = hotel_models.Review.objects.all()
     serializer_class = hotel_serializers.ReviewSerializer
+
+    def perform_create(self, serializer):
+        # Automatically set the user to the current logged-in user
+        serializer.save(user=self.request.user)

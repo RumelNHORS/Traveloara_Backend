@@ -59,7 +59,7 @@ class ContactMessageSerializer(serializers.ModelSerializer):
         phone_pattern = r'\b\d{10,15}\b'
         # Regex for email addresses
         email_pattern = r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}'
-        
+
         # Replace phone numbers with '[HIDDEN]'
         message = re.sub(phone_pattern, '[HIDDEN]', message)
         # Replace email addresses with '[HIDDEN]'
@@ -98,10 +98,14 @@ class ContactMessageSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
     room_type = serializers.SerializerMethodField()
+
     class Meta:
         model = hotel_models.Review
         fields = ['id', 'user', 'username', 'room', 'room_type', 'rating', 'message']
+        read_only_fields = ['user']
+
     def get_username(self, obj):
         return obj.user.username
+
     def get_room_type(self, obj):
         return obj.room.room_type
