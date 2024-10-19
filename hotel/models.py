@@ -25,16 +25,24 @@ CANCELATION_CHOICE = (
     ('Moderate', 'Moderate'),
 )
 
-# Property Type Choices
+# Lease type choices for properties (office spaces)
+LEASE_TYPE_CHOICES = [
+    ('hourly', 'Hourly'),
+    ('daily', 'Daily'),
+    ('weekly', 'Weekly'),
+    ('monthly', 'Monthly'),
+    ('yearly', 'Yearly'),
+]
+
 PROPERTY_TYPE_CHOICES = [
-    ('Room', 'Room'),
-    ('Hotel', 'Hotel'),
-    ('Resort', 'Resort'),
-    ('Office Space', 'Office Space'),
-    ('Hotel Apartment', 'Hotel Apartment'),
-    ('Apartment', 'Apartment'),
-    ('Paying Guest (PG)', 'Paying Guest (PG)'),
-    ('Store', 'Store'),
+    ('room', 'Room'),
+    ('hotel', 'Hotel'),
+    ('resort', 'Resort'),
+    ('office', 'Office Space'),
+    ('apartment', 'Apartment'),
+    ('hotel_apartment', 'Hotel Apartment'),
+    ('pg', 'Paying Guest'),
+    ('store', 'Store'),
 ]
 
 # Models For Adding Property
