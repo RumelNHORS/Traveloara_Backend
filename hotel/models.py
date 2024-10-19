@@ -58,7 +58,7 @@ class Property(models.Model):
     city = models.CharField(max_length=20)
     status = models.CharField(max_length=10, choices=PROPERTY_STATUS, default='Live')
     # New field for comma-separated amenities
-    # amenities = models.CharField(max_length=255, blank=True, help_text="Comma separated amenities, e.g., Wi-Fi, Parking, Pool")
+    amenities = models.TextField(blank=True, null=True)
     
     # New field for property type
     property_type = models.CharField(max_length=50, choices=PROPERTY_TYPE_CHOICES, default='Room')
@@ -93,6 +93,8 @@ class Room(models.Model):
     image4 = models.ImageField(upload_to='rooms/', blank=True, null=True)
     image5 = models.ImageField(upload_to='rooms/', blank=True, null=True)
     # Adding room amenities
+    room_amenities = models.TextField(null=True, blank=True)
+
     is_smoking = models.BooleanField(default=False)
     is_media = models.BooleanField(default=False)
     is_event = models.BooleanField(default=False)
