@@ -1,9 +1,6 @@
 from django.urls import path
 # from .views import PropertyListCreateView, PropertyDetailView
 from hotel import views as hotel_views
-
-
-
 urlpatterns = [
     # For listing all properties or creating a new properties
     path('properties/', hotel_views.PropertyListCreateView.as_view(), name='property_list_create'),

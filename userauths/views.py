@@ -28,16 +28,20 @@ class UserRegisterView(generics.CreateAPIView):
 # User Loggin View
 class UserLoginView(APIView):
     authentication_classes = [CsrfExemptSessionAuthentication]
+
     def post(self, request, *args, **kwargs):
         serializer = userauth_serializers.UserLoginSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
         login(request, user)  # Use Django's login function
-        login_user_email = user.email
-        print('****************************************')
-        print('Login_User_Email:', login_user_email)
-        print('****************************************')
-        return Response({"message": "Login successful."}, status=status.HTTP_200_OK)
+        
+        # Serialize the logged-in user's details
+        user_detail_serializer = userauth_serializers.UserDetailSerializer(user)
+
+        return Response({
+            "message": "Login successful.",
+            "user": user_detail_serializer.data  # Include the serialized user data
+        }, status=status.HTTP_200_OK)
     
 # ALl User List View    
 class UserListView(generics.ListAPIView):
