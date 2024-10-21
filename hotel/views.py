@@ -62,6 +62,10 @@ class RoomListCreateView(generics.ListCreateAPIView):
         # Get property_type from query parameters
         property_type = self.request.query_params.get('property_type', None)
 
+        # Get min_price and max_price from the query parameters for price range filter
+        min_price = self.request.query_params.get('min_price', None)
+        max_price = self.request.query_params.get('max_price', None)
+
         if user_id:
             # Filter rooms by the provided user_id from the Property model(GET /rooms/?user_id=11)
             queryset = queryset.filter(property__user_id=user_id)
@@ -82,6 +86,18 @@ class RoomListCreateView(generics.ListCreateAPIView):
         # Filter rooms by property_type (GET /rooms/?property_type=Hotel)
         if property_type:
             queryset = queryset.filter(property__property_type__icontains=property_type)
+
+
+        """ 
+        Filter by price range if both min_price and/or max_price are provided
+        To filter rooms with a price between $100 and $300:(/rooms/?min_price=100&max_price=300)
+        To filter rooms with a price greater than or equal to $150: /rooms/?min_price=150
+        To filter rooms with a price less than or equal to $250: /rooms/?max_price=250
+        """
+        if min_price:
+            queryset = queryset.filter(price_per_night__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price_per_night__lte=max_price)
 
         # If no user_id is provided, return all rooms
         return queryset
